@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva de Blood Bowl</title>
+    
+    <!-- Fuentes: Russo One (Deportiva) y Roboto Condensed (Técnica) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Russo+One&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* --- TEMA "SUPER BOWL" --- */
+        
+        body {
+            font-family: 'Roboto Condensed', sans-serif;
+            background-color: #1e4d2b; /* Verde Césped Oscuro */
+            /* Patrón de "césped cortado" */
+            background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            color: #f0fdf4;
+        }
+        
+        h1, h2 {
+            font-family: 'Russo One', sans-serif; /* Fuente Blocky deportiva */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Contenedor principal */
+        main {
+            /* Aspecto de Pizarra Táctica */
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Estilos del Acordeón (Estilo Marcador/Scoreboard) */
+        .accordion-item {
+            transition: all 0.2s ease;
+            border: 2px solid #ffffff;
+            border-radius: 8px;
+            background-color: #166534; /* Green 800 */
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+        }
+
+        .accordion-item.active {
+            border-color: #fbbf24; /* Amber 400 */
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+        }
+
+        .accordion-header {
+            background: linear-gradient(to right, #14532d, #166534); /* Degradado sutil */
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 1.2rem;
+        }
+
+        .accordion-item.active .accordion-header {
+            background: #0f172a; /* Slate 900 - Contraste fuerte al abrir */
+            color: #fbbf24; /* Texto dorado/amarillo deportivo */
+            border-bottom: 2px solid #fbbf24;
+        }
+        
+        /* Iconos */
+        .icon-plus, .icon-minus {
+            font-weight: 900;
+            font-size: 1.5rem;
+        }
+
+        /* Lógica de visualización de iconos */
+        .icon-plus { display: block; }
+        .icon-minus { display: none; }
+        .accordion-item.active .icon-plus { display: none; }
+        .accordion-item.active .icon-minus { display: block; }
+
+        /* Animación del contenido */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+            background-color: #f0fdf4; /* Fondo blanco/verde muy claro para leer bien */
+            color: #111827; /* Texto oscuro */
+        }
+        
+        .accordion-content.open {
+            max-height: 2000px;
+            padding: 1.5rem;
+        }
+
+        /* Decoraciones estilo "Yardas" */
+        .yard-line {
+            border-left: 4px solid #fff;
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Cajas de reglas */
+        .play-box {
+            background-color: #e2e8f0;
+            border: 1px solid #94a3b8;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        
+        /* Etiquetas de acción */
+        .action-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+
+        /* Título principal con efecto 3D */
+        h1 {
+            text-shadow: 3px 3px 0px #000;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4">
+
+    <main class="max-w-3xl mx-auto p-2 md:p-6 pb-20">
+        <header class="text-center mb-8">
+            <!-- Logo simulado con texto -->
+            <div class="inline-block border-4 border-white px-6 py-4 bg-red-700 transform -skew-x-12 shadow-lg mb-4">
+                <h1 class="text-4xl md:text-6xl text-white transform skew-x-12 m-0">BLOOD BOWL</h1>
+            </div>
+            <p class="text-xl font-bold text-yellow-400 tracking-widest uppercase drop-shadow-md">Playbook & Rules</p>
+        </header>
+
+        <!-- Acordeón de Reglas -->
+        <div id="rules-accordion">
+
+            <!-- 0. EL CLIMA (WEATHER) -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                        <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">0</span>
+                        WEATHER (El Clima)
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <div class="bg-blue-100 border-l-4 border-blue-500 p-3 mb-3 text-blue-900 text-sm">
+                        <strong>Instrucciones:</strong> Tira <strong>2d6</strong> antes de empezar el partido.
+                    </div>
+                    <table class="w-full text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-stone-800 text-white uppercase text-xs">
+                                <th class="p-2 border border-stone-600 w-12">2d6</th>
+                                <th class="p-2 border border-stone-600">Resultado</th>
+                                <th class="p-2 border border-stone-600">Efecto</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-stone-800 bg-white">
+                            <tr class="border-b border-stone-200 bg-red-50">
+                                <td class="p-2 text-center font-bold text-red-800 text-lg">2</td>
+                                <td class="p-2 font-bold uppercase text-xs">Calor Asfixiante</td>
+                                <td class="p-2 text-xs">Tras cada TD, tira 1d6 por cada jugador. Con <strong>1</strong>, no juega.</td>
+                            </tr>
+                            <tr class="border-b border-stone-200 bg-yellow-50">
+                                <td class="p-2 text-center font-bold text-yellow-700 text-lg">3</td>
+                                <td class="p-2 font-bold uppercase text-xs">Muy Soleado</td>
+                                <td class="p-2 text-xs"><strong>-1</strong> a los <strong>PASES</strong>.</td>
+                            </tr>
+                            <tr class="border-b border-stone-200 bg-green-50">
+                                <td class="p-2 text-center font-bold text-green-700 text-lg">4-10</td>
+                                <td class="p-2 font-bold uppercase text-xs">Perfecto</td>
+                                <td class="p-2 text-xs italic">¡A jugar!</td>
+                            </tr>
+                            <tr class="border-b border-stone-200 bg-blue-50">
+                                <td class="p-2 text-center font-bold text-blue-700 text-lg">11</td>
+                                <td class="p-2 font-bold uppercase text-xs">Lluvia</td>
+                                <td class="p-2 text-xs"><strong>-1</strong> a <strong>ATRAPAR</strong>, Interceptar o Recoger.</td>
+                            </tr>
+                            <tr class="bg-blue-100">
+                                <td class="p-2 text-center font-bold text-blue-900 text-lg">12</td>
+                                <td class="p-2 font-bold uppercase text-xs">Ventisca</td>
+                                <td class="p-2 text-xs">Sólo Pases Rápidos/Cortos. GFI falla con <strong>1-2</strong>.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 1. Preparación -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                        <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">1</span>
+                        KICK-OFF & PREVIA
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <div class="yard-line border-l-red-600">
+                        <h3 class="font-bold uppercase text-stone-500 text-xs mb-1">Protocolo de Inicio</h3>
+                        <p class="mb-2 font-bold text-xl">El Sorteo (Coin Toss)</p>
+                        <p class="text-sm text-stone-600">Ganador decide: <strong>Patear (Defensa)</strong> o <strong>Recibir (Ataque)</strong>.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="play-box bg-blue-50 border-blue-200">
+                            <p class="font-bold text-blue-900 mb-1">Alineación (11 Jugadores)</p>
+                            <ul class="list-disc ml-4 text-sm">
+                                <li><strong>3 Min.</strong> en Línea Central (Scrimmage).</li>
+                                <li><strong>2 Max.</strong> en Bandas (Wide Zones).</li>
+                            </ul>
+                        </div>
+                        <div class="play-box bg-green-50 border-green-200">
+                            <p class="font-bold text-green-900 mb-1">La Patada</p>
+                            <ul class="list-disc ml-4 text-sm">
+                                <li>Desviación: 1d6 + Plantilla.</li>
+                                <li><strong>Touchback:</strong> Si el balón sale fuera <strong>o cae en la Zona de TD</strong>, ¡balón a la mano de quien quieras!</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Turnover -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                         <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">2</span>
+                        TURNOVER (Pérdida de Turno)
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <div class="bg-red-100 border-l-4 border-red-600 p-4 mb-4">
+                        <p class="text-red-800 font-bold text-lg uppercase">¡ALERTA!</p>
+                        <p>Cualquier fallo de dados termina tu turno <strong>INMEDIATAMENTE</strong>.</p>
+                    </div>
+                    
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="bg-gray-200 text-gray-600 uppercase text-xs">
+                                <th class="py-2 px-2 text-left">Causa</th>
+                                <th class="py-2 px-2 text-left">Consecuencia</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-300">
+                            <tr>
+                                <td class="py-2 px-2 font-bold">Jugador cae al suelo</td>
+                                <td class="py-2 px-2 text-stone-600">Placaje fallido, Esquiva fallida, GFI fallido.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-2 font-bold">Balón toca suelo</td>
+                                <td class="py-2 px-2 text-stone-600">Fallo al Recoger, Fallo al Pasar.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-2 font-bold">Falta expulsada</td>
+                                <td class="py-2 px-2 text-stone-600">Si el árbitro te pilla pisando (Dobles).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 3. Acciones -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                         <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">3</span>
+                        PLAYBOOK (Acciones)
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <p class="mb-3 text-stone-500 italic text-center">Elige 1 acción por jugador activo.</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                            <span>🏃 <strong>Mover</strong></span>
+                            <span class="text-xs bg-gray-200 px-2 py-1 rounded">Estándar</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                            <span>👊 <strong>Placar (Block)</strong></span>
+                            <span class="text-xs bg-gray-200 px-2 py-1 rounded">Estándar</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-yellow-50 p-2 rounded border border-yellow-300">
+                            <span class="text-yellow-900">⚡ <strong>BLITZ</strong> (Mover + Pegar)</span>
+                            <span class="text-xs bg-yellow-200 text-yellow-800 px-2 py-1 rounded font-bold">1 / TURNO</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                            <span>🏈 <strong>Pasar</strong></span>
+                            <span class="text-xs bg-gray-200 px-2 py-1 rounded">1 / Turno</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                            <span>🤲 <strong>Entrega (Hand-off)</strong></span>
+                            <span class="text-xs bg-gray-200 px-2 py-1 rounded">1 / Turno</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>☠️ <strong>Falta</strong></span>
+                            <span class="text-xs bg-gray-200 px-2 py-1 rounded">1 / Turno</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Agilidad -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                         <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">4</span>
+                        AGILIDAD (AG)
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <div class="yard-line border-l-blue-500">
+                        <p class="font-bold">Tirada Básica: 1d6 vs Atributo AG</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2 text-center">
+                        <div class="p-3 bg-gray-100 rounded">
+                            <div class="font-bold uppercase text-xs text-stone-500">Esquivar</div>
+                            <div class="text-lg font-black">DODGE</div>
+                            <div class="text-xs text-red-600">Fallo = Caída</div>
+                        </div>
+                        <div class="p-3 bg-gray-100 rounded">
+                            <div class="font-bold uppercase text-xs text-stone-500">Recoger</div>
+                            <div class="text-lg font-black">PICK-UP</div>
+                            <div class="text-xs text-red-600">Fallo = Rebote</div>
+                        </div>
+                        <div class="p-3 bg-gray-100 rounded">
+                            <div class="font-bold uppercase text-xs text-stone-500">Atrapar</div>
+                            <div class="text-lg font-black">CATCH</div>
+                            <div class="text-xs text-green-600">No es Turnover</div>
+                        </div>
+                        <div class="p-3 bg-gray-100 rounded">
+                            <div class="font-bold uppercase text-xs text-stone-500">Saltar</div>
+                            <div class="text-lg font-black">LEAP</div>
+                            <div class="text-xs text-red-600">Sobre caídos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 5. Placajes -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                         <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">5</span>
+                        BLOCKING (Placajes)
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <!-- GRÁFICO DE APOYOS -->
+                    <div class="mb-4 bg-green-900 text-white border-2 border-dashed border-green-400 p-3 rounded-lg">
+                        <h4 class="text-green-300 font-bold uppercase text-sm text-center mb-3">📋 Pizarra Táctica: ¿Cuándo hay Apoyo?</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center text-stone-900">
+                            <!-- CASO 1 -->
+                            <div class="bg-white p-2 rounded">
+                                <p class="text-green-700 font-bold text-sm mb-1">✅ APOYO VÁLIDO (+1 F)</p>
+                                <p class="text-xs text-stone-600">El Ayudante toca al Enemigo y <strong>nadie le marca a él</strong>.</p>
+                            </div>
+                            <!-- CASO 2 -->
+                            <div class="bg-white p-2 rounded">
+                                <p class="text-red-700 font-bold text-sm mb-1">❌ APOYO ANULADO</p>
+                                <p class="text-xs text-stone-600">El Ayudante está marcado por <strong>otro rival</strong>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 bg-stone-900 text-white p-4 rounded shadow-inner">
+                        <h4 class="text-yellow-400 font-bold uppercase text-sm mb-2">Calculadora de Fuerza</h4>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Fuerza Igual</span>
+                            <strong class="text-yellow-400">1 Dado</strong>
+                        </div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>Eres Más Fuerte</span>
+                            <strong class="text-green-400">2 Dados (Tú eliges)</strong>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>Eres Más Débil</span>
+                            <strong class="text-red-400">2 Dados (Él elige)</strong>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-2 border-t border-gray-700 pt-2">Apoyo: +1F por cada amigo libre pegado al enemigo.</p>
+                    </div>
+
+                    <h4 class="font-bold uppercase text-stone-400 text-xs mb-2">Resultados del Dado</h4>
+                    <div class="grid grid-cols-5 gap-1 text-center text-2xl">
+                        <div class="bg-yellow-100 p-2 rounded border border-yellow-400" title="POW">💥</div>
+                        <div class="bg-yellow-100 p-2 rounded border border-yellow-400" title="Tropiezo">❗</div>
+                        <div class="bg-yellow-100 p-2 rounded border border-yellow-400" title="Empujón">➡️</div>
+                        <div class="bg-red-100 p-2 rounded border border-red-400 col-span-2" title="Calavera / Ambos">💀/👥</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. Pases -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                         <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">6</span>
+                        PASSING (Juego de Pase)
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                     <div class="yard-line border-l-green-600">
+                        <p class="text-sm font-bold uppercase text-green-800">La Jugada Maestra:</p>
+                        <p class="text-lg">Mover ➜ Recoger ➜ Lanzar</p>
+                        <p class="text-xs text-stone-500">Todo en la misma acción.</p>
+                    </div>
+
+                    <ol class="list-decimal list-inside space-y-3 font-bold text-stone-800 mt-4">
+                        <li>Medir Rango (Regla de Pases).</li>
+                        <li>Tirar 1d6 (Modificado por AG).</li>
+                    </ol>
+                    
+                    <div class="mt-4 space-y-2 text-sm">
+                        <div class="flex items-center">
+                            <span class="w-4 h-4 bg-green-500 rounded-full mr-2"></span>
+                            <span><strong>PRECISO:</strong> Balón al objetivo.</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-4 h-4 bg-yellow-500 rounded-full mr-2"></span>
+                            <span><strong>DESVIADO:</strong> Rebota 3 veces desde objetivo.</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-4 h-4 bg-red-600 rounded-full mr-2"></span>
+                            <span><strong>FUMBLE (1):</strong> Cae a tus pies. TURNOVER.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Lesiones -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                         <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">7</span>
+                        INJURY (Lesiones)
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                     <!-- ADVERTENCIA DADOS -->
+                     <div class="bg-red-100 border-l-4 border-red-600 p-3 mb-4 rounded">
+                        <strong class="text-red-900 text-sm">⚠️ IMPORTANTE:</strong>
+                        <p class="text-sm text-red-800">Usa <strong>2d6</strong> para armadura. ¡NUNCA el d16!</p>
+                    </div>
+
+                    <div class="flex items-center justify-center bg-stone-200 rounded p-2 mb-4 font-bold text-stone-600">
+                        <span class="mr-2">1. ARMADURA (2d6)</span> 
+                        <span class="text-xl mr-2">➜</span>
+                        <span>2. HERIDA (2d6)</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center bg-yellow-100 p-2 rounded border-l-4 border-yellow-500">
+                            <div class="font-bold w-12 text-xl">2-7</div>
+                            <div>
+                                <p class="font-bold text-sm uppercase">Aturdido (Stunned)</p>
+                                <p class="text-xs">Boca abajo. Pierde 1 turno.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center bg-orange-100 p-2 rounded border-l-4 border-orange-500">
+                            <div class="font-bold w-12 text-xl">8-9</div>
+                            <div>
+                                <p class="font-bold text-sm uppercase">K.O.</p>
+                                <p class="text-xs">Al banquillo. Vuelve con 4+ tras TD.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center bg-red-100 p-2 rounded border-l-4 border-red-600">
+                            <div class="font-bold w-12 text-xl">10+</div>
+                            <div>
+                                <p class="font-bold text-sm uppercase text-red-700">Casualty (Herido)</p>
+                                <p class="text-xs">Fuera del partido + SPP.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. JUEGO SUCIO (FOUL) -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                         <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">8</span>
+                        FOUL (Juego Sucio)
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <div class="bg-stone-800 text-white p-3 rounded mb-3 text-center border border-stone-600">
+                        <p class="text-sm uppercase font-bold text-yellow-400">⚠️ 1 FALTA POR TURNO ⚠️</p>
+                        <p class="text-xs text-stone-400">Ataca a un jugador en el suelo.</p>
+                    </div>
+
+                    <div class="yard-line border-l-stone-500">
+                        <h4 class="font-bold uppercase text-sm mb-2">Cálculo (2d6 vs AR)</h4>
+                        <ul class="list-none space-y-2 text-sm">
+                            <li class="flex justify-between bg-green-50 p-2 rounded text-green-800">
+                                <span>Tus amigos (libres)</span>
+                                <strong>+1 c/u</strong>
+                            </li>
+                            <li class="flex justify-between bg-red-50 p-2 rounded text-red-800">
+                                <span>Rivales (libres)</span>
+                                <strong>-1 c/u</strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-red-100 border-2 border-red-500 rounded text-center">
+                        <strong class="block text-red-900 text-lg uppercase">¡EXPULSIÓN!</strong>
+                        <p class="text-sm text-red-800 font-bold mt-1">Si sacas DOBLES en Armadura o Herida.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. Extras -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                         <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">9</span>
+                        EXTRAS
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-3 border-2 border-dashed border-stone-300 rounded bg-stone-50">
+                            <strong class="block text-lg uppercase mb-1">Forzar Marcha (GFI)</strong>
+                            <p class="text-sm text-stone-600 mb-2">Mover 1 o 2 casillas extra.</p>
+                            <div class="flex text-center font-bold text-sm">
+                                <div class="w-1/2 text-green-600">2+ OK</div>
+                                <div class="w-1/2 text-red-600">1 CAÍDA</div>
+                            </div>
+                        </div>
+                        <div class="p-3 border-2 border-dashed border-stone-300 rounded bg-stone-50">
+                            <strong class="block text-lg uppercase mb-1">Re-Rolls</strong>
+                            <p class="text-sm text-stone-600">Repetir tirada fallida.</p>
+                            <p class="text-xs text-red-500 font-bold mt-2 uppercase">¡Nunca se repite una repetida!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. ROSTER: NOBLEZA IMPERIAL -->
+            <div class="accordion-item">
+                <div class="accordion-header flex justify-between items-center cursor-pointer">
+                    <h2 class="text-xl md:text-2xl flex items-center">
+                         <span class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">10</span>
+                        ROSTER: NOBLEZA IMPERIAL
+                    </h2>
+                    <div class="text-white">
+                        <span class="icon-plus">+</span>
+                        <span class="icon-minus">-</span>
+                    </div>
+                </div>
+                <div class="accordion-content">
+                    <p class="mb-4 text-sm text-stone-600 italic text-center">Estilo de juego: Control, Defensa y Contragolpe.</p>
+                    <div class="space-y-3">
+                        <!-- BLITZERS -->
+                        <div class="flex items-start bg-yellow-50 border-l-4 border-yellow-500 p-3 rounded shadow-sm">
+                            <div class="mr-3 text-2xl">🦅</div>
+                            <div>
+                                <h4 class="font-bold text-yellow-900 uppercase">Noble Blitzer (La Estrella)</h4>
+                                <p class="text-xs text-stone-500 mb-1">Casco con gran cresta/plumas. Pose heroica.</p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="action-tag bg-blue-200 text-blue-800">Bloquear</span>
+                                    <span class="action-tag bg-blue-200 text-blue-800">Atrapar</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- BODYGUARDS -->
+                        <div class="flex items-start bg-stone-200 border-l-4 border-stone-600 p-3 rounded shadow-sm">
+                            <div class="mr-3 text-2xl">🛡️</div>
+                            <div>
+                                <h4 class="font-bold text-stone-900 uppercase">Bodyguard (El Muro)</h4>
+                                <p class="text-xs text-stone-500 mb-1">Armadura pesada completa. Estáticos.</p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="action-tag bg-stone-300 text-stone-800">Mantenerse Firme</span>
+                                    <span class="action-tag bg-stone-300 text-stone-800">Forcejeo</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- THROWERS -->
+                        <div class="flex items-start bg-green-50 border-l-4 border-green-500 p-3 rounded shadow-sm">
+                            <div class="mr-3 text-2xl">🏈</div>
+                            <div>
+                                <h4 class="font-bold text-green-900 uppercase">Thrower (Director)</h4>
+                                <p class="text-xs text-stone-500 mb-1">Balón en mano o señalando. Armadura media.</p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="action-tag bg-green-200 text-green-800">Pasar</span>
+                                    <span class="action-tag bg-green-200 text-green-800">Pase en Carrera</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- LINEMEN -->
+                        <div class="flex items-start bg-gray-50 border-l-4 border-gray-400 p-3 rounded shadow-sm">
+                            <div class="mr-3 text-2xl">🪶</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 uppercase">Retainer (Masilla)</h4>
+                                <p class="text-xs text-stone-500 mb-1">Ropa ligera, plumas, aspecto servicial.</p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="action-tag bg-gray-200 text-gray-600">Zafarse (Fend)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- OGRE -->
+                         <div class="flex items-start bg-red-50 border-l-4 border-red-800 p-3 rounded shadow-sm">
+                            <div class="mr-3 text-2xl">👹</div>
+                            <div>
+                                <h4 class="font-bold text-red-900 uppercase">Ogro (El Músculo)</h4>
+                                <p class="text-xs text-stone-500 mb-1">Gigante.</p>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="action-tag bg-red-200 text-red-800">Fuerza 5</span>
+                                    <span class="action-tag bg-red-200 text-red-800">Cabeza Hueca</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const accordionItems = document.querySelectorAll('.accordion-item');
+
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+
+                header.addEventListener('click', () => {
+                    // Cierra todos los demás
+                    accordionItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                            otherItem.querySelector('.accordion-content').classList.remove('open');
+                        }
+                    });
+
+                    // Abre o cierra el actual
+                    item.classList.toggle('active');
+                    content.classList.toggle('open');
+                    
+                    // Scroll automático suave para que la cabecera quede visible
+                    if (content.classList.contains('open')) {
+                         setTimeout(() => {
+                            item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 300);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
